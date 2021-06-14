@@ -10,7 +10,18 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
+    env:
+      PKGVERS: riscv32-snitch-llvm-ubuntu2004
+      BUGURL: https://github.com/pulp-platform/snitch-llvm/issues
     steps:
+      ########################################
+      ## Prepare
+      ########################################
+      -
+        name: Prepare
+        run: |
+          export PKGVERS=${PKGVERS}-${GITHUB_RUN_NUMBER}
+
       ########################################
       ## Checkout
       ########################################
@@ -46,7 +57,7 @@ jobs:
           tags: linux-ubuntu2004:latest
       
       ########################################
-      ## Build docker container
+      ## Build Info
       ########################################
       -
         name: Build Info
@@ -54,6 +65,25 @@ jobs:
          docker run -v $PWD:/home/builder -w/home/builder linux-ubuntu2004:latest ./builder-info.sh
          cat build-info.txt
       
+      ########################################
+      ## Build
+      ########################################
+      -
+        name: Build
+        run: |
+          docker run -v $PWD:/home/builder -w/home/builder linux-ubuntu2004:latest \
+            -e BUGURL=${BUGURL} \
+            -e PKGVERS=${PKGVERS} \
+            ./stages/build-riscv32-llvm.sh
+
+      ########################################
+      ## Package
+      ########################################
+      -
+        name: Package
+        run: |
+          tar -czf ${PKGVERS}.tar.gz --transform s/^install/${PKGVERS}/ install
+
       ########################################
       ## Upload
       ########################################
@@ -64,6 +94,7 @@ jobs:
           name: artifacts
           path: |
             build-info.txt
+            ${PKGVERS}.tar.gz
 
       # -
       #   name: Build
