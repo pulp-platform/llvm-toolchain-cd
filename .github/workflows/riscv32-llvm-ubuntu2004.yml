@@ -52,12 +52,19 @@ jobs:
         name: Build Info
         run: |
          docker run -it -v $PWD:/home/builder -w/home/builder linux-ubuntu2004:latest ./builder-info.sh
-
+         cat build-info.txt
+      
+      ########################################
+      ## Upload
+      ########################################
+      -
+        name: Upload
         uses: actions/upload-artifact@v2
-          with:
-            name: build-info
-            path: |
-              build-info.txt
+        with:
+          name: artifacts
+          path: |
+            build-info.txt
+
       # -
       #   name: Build
       # -
