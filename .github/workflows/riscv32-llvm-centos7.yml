@@ -1,0 +1,99 @@
+# Copyright 2020 ETH Zurich and University of Bologna.
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: riscv32-llvm-centos7
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    env:
+      PKGVERS: riscv32-snitch-llvm-centos7
+      BUGURL: https://github.com/pulp-platform/snitch-llvm/issues
+    steps:
+      ########################################
+      ## Prepare
+      ########################################
+      -
+        name: Prepare
+        run: |
+          export PKGVERS=${PKGVERS}-${GITHUB_RUN_NUMBER}
+
+      ########################################
+      ## Checkout
+      ########################################
+      
+      ## This
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      
+      ## LLVM
+      -
+        name: Checkout LLVM
+        uses: actions/checkout@v2
+        with:
+          repository: pulp-platform/snitch-llvm
+          ref: snitch
+          path: llvm-project
+      
+      ## NEWLIB
+      -
+        name: Checkout newlib
+        run: |
+          git clone --depth 1 -b newlib-3.3.0 https://sourceware.org/git/newlib-cygwin.git newlib
+      
+      ########################################
+      ## Build docker container
+      ########################################
+      -
+        name: Prepare Docker
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          file: docker/linux-centos7.Dockerfile
+          tags: linux-centos7:latest
+      
+      ########################################
+      ## Build Info
+      ########################################
+      -
+        name: Build Info
+        run: |
+         docker run -v $PWD:/home/builder -w/home/builder linux-centos7:latest ./builder-info.sh
+         cat build-info.txt
+      
+      ########################################
+      ## Build
+      ########################################
+      -
+        name: Build
+        run: |
+          docker run -v $PWD:/home/builder -w/home/builder \
+            -e BUGURL=${BUGURL} \
+            -e PKGVERS=${PKGVERS} \
+            linux-centos7:latest \
+            ./stages/build-riscv32-llvm.sh
+
+      ########################################
+      ## Package
+      ########################################
+      -
+        name: Package
+        run: |
+          tar -czf ${PKGVERS}.tar.gz --transform s/^install/${PKGVERS}/ install
+
+      ########################################
+      ## Upload
+      ########################################
+      -
+        name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts
+          path: |
+            build-info.txt
+            ${PKGVERS}.tar.gz
