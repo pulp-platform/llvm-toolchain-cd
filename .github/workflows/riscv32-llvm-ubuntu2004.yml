@@ -1,0 +1,51 @@
+# Copyright 2020 ETH Zurich and University of Bologna.
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: riscv32-llvm-ubuntu2004
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      ########################################
+      ## Checkout
+      ########################################
+      
+      ## This
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      
+      ## LLVM
+      -
+        name: Checkout LLVM
+        uses: actions/checkout@v2
+        with:
+          repository: pulp-platform/snitch-llvm
+          path: llvm-project
+      
+      ## NEWLIB
+      -
+        name: Checkout newlib
+        run: |
+          git clone --depth 1 -b newlib-3.3.0 https://sourceware.org/git/newlib-cygwin.git newlib
+      
+      ########################################
+      ## Build docker container
+      ########################################
+      -
+        name: Prepare Docker
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          file: docker/linux-ubuntu2004.Dockerfile
+          tags: linux-ubuntu2004:latest
+      # -
+      #   name: Build Info
+      # -
+      #   name: Build
+      # -
+      #   name: Package
+      # -
+      #   name: Test
