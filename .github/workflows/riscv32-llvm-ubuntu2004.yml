@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     env:
-      PKGVERS: riscv32-snitch-llvm-ubuntu2004
+      PKGVERS: riscv32-snitch-llvm-ubuntu2004-${{ github.run_number }}
       BUGURL: https://github.com/pulp-platform/snitch-llvm/issues
     steps:
       ########################################
@@ -22,7 +22,6 @@ jobs:
       -
         name: Prepare
         run: |
-          export PKGVERS=${PKGVERS}-${GITHUB_RUN_NUMBER}
           echo "test" > build-info.txt
           echo "test2" > ${PKGVERS}.tar.gz
 
