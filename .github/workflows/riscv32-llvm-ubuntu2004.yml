@@ -94,12 +94,14 @@ jobs:
       ## Upload
       ########################################
       -
-        name: Upload
-        - uses: actions/upload-artifact@v2
-          with:
-            name: Build Info
-            path: build-info.txt
-        - uses: actions/upload-artifact@v2
-          with:
-            name: ${{ env.MY_VAR }}
-            path: ${{ env.MY_VAR }}.tar.gz
+        name: Upload Build Info
+        uses: actions/upload-artifact@v2
+        with:
+          name: Build Info
+          path: build-info.txt
+      -
+        name: Upload Toolchain
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.MY_VAR }}
+          path: ${{ env.MY_VAR }}.tar.gz
