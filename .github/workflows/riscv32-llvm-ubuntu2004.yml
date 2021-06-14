@@ -4,6 +4,9 @@
 
 name: riscv32-llvm-ubuntu2004
 
+on: 
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-20.04
