@@ -97,10 +97,3 @@ jobs:
           path: |
             build-info.txt
             ${PKGVERS}.tar.gz
-
-      # -
-      #   name: Build
-      # -
-      #   name: Package
-      # -
-      #   name: Test
