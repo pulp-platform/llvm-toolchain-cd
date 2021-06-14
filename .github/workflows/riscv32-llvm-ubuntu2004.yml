@@ -72,9 +72,10 @@ jobs:
       -
         name: Build
         run: |
-          docker run -v $PWD:/home/builder -w/home/builder linux-ubuntu2004:latest \
+          docker run -v $PWD:/home/builder -w/home/builder \
             -e BUGURL=${BUGURL} \
             -e PKGVERS=${PKGVERS} \
+            linux-ubuntu2004:latest \
             ./stages/build-riscv32-llvm.sh
 
       ########################################
