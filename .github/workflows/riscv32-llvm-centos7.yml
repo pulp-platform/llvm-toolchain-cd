@@ -97,13 +97,9 @@ jobs:
           name: ${{ env.PKGVERS }}
           path: ${{ env.PKGVERS }}.tar.gz
 
-  ########################################
-  ## Test
-  ########################################
-  test:
-    needs: build
-    runs-on: ubuntu-20.04
-    steps:
+      ########################################
+      ## Test
+      ########################################
       - 
         name: Test
         run: |
@@ -119,26 +115,18 @@ jobs:
           name: Test Info
           path: llvm-tests.log
 
-  ########################################
-  ## Deploy
-  ########################################
-  deploy:
-    needs: test
-    runs-on: ubuntu-20.04
-    env:
-      SSH_PRIVATE_KEY: ${{secrets.SOURCEFORGE_SSH_PRIVATE_KEY}}
-      SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
-      SOURCEFORGE_KEY: ${{ github.workspace }}/../private.key
-    steps:
+      ########################################
+      ## Deploy
+      ########################################
       -
-        name: prepare
+        name: deploy-prepare
         run: |
           mkdir -p ~/.ssh/
           echo "${SSH_PRIVATE_KEY}" > ${SOURCEFORGE_KEY}
           sudo chmod 600 ${SOURCEFORGE_KEY}
           echo "${SSH_KNOWN_HOSTS}" > ~/.ssh/known_hosts
       -
-        name: sourceforge
+        name: deploy-sourceforge
         run: |
           dstname=`echo ${PKGVERS} | rev | cut -d'-' -f 2- | rev`
           scp -i ${SOURCEFORGE_KEY} ${PKGVERS}.tar.gz beeble42brox@frs.sourceforge.net:/home/frs/project/snitch-llvm/nightly/${dstname}
