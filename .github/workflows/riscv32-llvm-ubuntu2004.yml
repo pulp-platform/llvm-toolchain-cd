@@ -37,6 +37,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: pulp-platform/snitch-llvm
+          ref: snitch
           path: llvm-project
       
       ## NEWLIB
