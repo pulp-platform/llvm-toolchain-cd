@@ -44,8 +44,19 @@ jobs:
           push: false
           file: docker/linux-ubuntu2004.Dockerfile
           tags: linux-ubuntu2004:latest
-      # -
-      #   name: Build Info
+      
+      ########################################
+      ## Build docker container
+      ########################################
+      -
+        name: Build Info
+        run: |
+         docker run -it -v $PWD:/home/builder -w/home/builder linux-ubuntu2004:latest ./builder-info.sh
+        uses: actions/upload-artifact@v2
+          with:
+            name: build-info
+            path: |
+              build-info.txt
       # -
       #   name: Build
       # -
