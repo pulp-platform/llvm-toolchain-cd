@@ -23,70 +23,72 @@ jobs:
         name: Prepare
         run: |
           export PKGVERS=${PKGVERS}-${GITHUB_RUN_NUMBER}
+          echo "test" > build-info.txt
+          echo "test2" > ${PKGVERS}.tar.gz
 
-      ########################################
-      ## Checkout
-      ########################################
+      # ########################################
+      # ## Checkout
+      # ########################################
       
-      ## This
-      -
-        name: Checkout
-        uses: actions/checkout@v2
+      # ## This
+      # -
+      #   name: Checkout
+      #   uses: actions/checkout@v2
       
-      ## LLVM
-      -
-        name: Checkout LLVM
-        uses: actions/checkout@v2
-        with:
-          repository: pulp-platform/snitch-llvm
-          ref: snitch
-          path: llvm-project
+      # ## LLVM
+      # -
+      #   name: Checkout LLVM
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: pulp-platform/snitch-llvm
+      #     ref: snitch
+      #     path: llvm-project
       
-      ## NEWLIB
-      -
-        name: Checkout newlib
-        run: |
-          git clone --depth 1 -b newlib-3.3.0 https://sourceware.org/git/newlib-cygwin.git newlib
+      # ## NEWLIB
+      # -
+      #   name: Checkout newlib
+      #   run: |
+      #     git clone --depth 1 -b newlib-3.3.0 https://sourceware.org/git/newlib-cygwin.git newlib
       
-      ########################################
-      ## Build docker container
-      ########################################
-      -
-        name: Prepare Docker
-        uses: docker/build-push-action@v2
-        with:
-          push: false
-          file: docker/linux-ubuntu2004.Dockerfile
-          tags: linux-ubuntu2004:latest
+      # ########################################
+      # ## Build docker container
+      # ########################################
+      # -
+      #   name: Prepare Docker
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     push: false
+      #     file: docker/linux-ubuntu2004.Dockerfile
+      #     tags: linux-ubuntu2004:latest
       
-      ########################################
-      ## Build Info
-      ########################################
-      -
-        name: Build Info
-        run: |
-         docker run -v $PWD:/home/builder -w/home/builder linux-ubuntu2004:latest ./builder-info.sh
-         cat build-info.txt
+      # ########################################
+      # ## Build Info
+      # ########################################
+      # -
+      #   name: Build Info
+      #   run: |
+      #    docker run -v $PWD:/home/builder -w/home/builder linux-ubuntu2004:latest ./builder-info.sh
+      #    cat build-info.txt
       
-      ########################################
-      ## Build
-      ########################################
-      -
-        name: Build
-        run: |
-          docker run -v $PWD:/home/builder -w/home/builder \
-            -e BUGURL=${BUGURL} \
-            -e PKGVERS=${PKGVERS} \
-            linux-ubuntu2004:latest \
-            ./stages/build-riscv32-llvm.sh
+      # ########################################
+      # ## Build
+      # ########################################
+      # -
+      #   name: Build
+      #   run: |
+      #     docker run -v $PWD:/home/builder -w/home/builder \
+      #       -e BUGURL=${BUGURL} \
+      #       -e PKGVERS=${PKGVERS} \
+      #       linux-ubuntu2004:latest \
+      #       ./stages/build-riscv32-llvm.sh
 
-      ########################################
-      ## Package
-      ########################################
-      -
-        name: Package
-        run: |
-          tar -czf ${PKGVERS}.tar.gz --transform s/^install/${PKGVERS}/ install
+      # ########################################
+      # ## Package
+      # ########################################
+      # -
+      #   name: Package
+      #   run: |
+      #     tar -czf ${PKGVERS}.tar.gz --transform s/^install/${PKGVERS}/ install
 
       ########################################
       ## Upload
@@ -95,7 +97,9 @@ jobs:
         name: Upload
         uses: actions/upload-artifact@v2
         with:
-          name: artifacts
-          path: |
-            build-info.txt
-            ${PKGVERS}.tar.gz
+          name: Build Info
+          path: build-info.txt
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.MY_VAR }}
+          path: ${{ env.MY_VAR }}.tar.gz
