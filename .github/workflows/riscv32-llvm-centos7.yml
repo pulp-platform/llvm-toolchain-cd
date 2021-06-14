@@ -6,6 +6,8 @@ name: riscv32-llvm-centos7
 
 on: 
   workflow_dispatch:
+  schedule:
+    - cron: '42 1 * * 4'
 
 jobs:
   build:
