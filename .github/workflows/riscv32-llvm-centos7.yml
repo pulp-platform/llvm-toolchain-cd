@@ -13,17 +13,9 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     env:
-      PKGVERS: riscv32-snitch-llvm-centos7
+      PKGVERS: riscv32-snitch-llvm-ubuntu2004-${{ github.run_number }}
       BUGURL: https://github.com/pulp-platform/snitch-llvm/issues
     steps:
-      ########################################
-      ## Prepare
-      ########################################
-      -
-        name: Prepare
-        run: |
-          export PKGVERS=${PKGVERS}-${GITHUB_RUN_NUMBER}
-
       ########################################
       ## Checkout
       ########################################
@@ -92,10 +84,30 @@ jobs:
       ## Upload
       ########################################
       -
-        name: Upload
+        name: Upload Build Info
         uses: actions/upload-artifact@v2
         with:
-          name: artifacts
+          name: Build Info
           path: |
             build-info.txt
-            ${PKGVERS}.tar.gz
+            llvm-tests.log
+      -
+        name: Upload Toolchain
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.PKGVERS }}
+          path: ${{ env.PKGVERS }}.tar.gz
+
+  ########################################
+  ## Test
+  ########################################
+  test:
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+      - run: |
+        docker run -v $PWD:/home/builder -w/home/builder \
+          -e BUGURL=${BUGURL} \
+          -e PKGVERS=${PKGVERS} \
+          linux-centos7:latest \
+          ./stages/test-llvm.sh

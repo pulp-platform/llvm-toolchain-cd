@@ -17,77 +17,68 @@ jobs:
       BUGURL: https://github.com/pulp-platform/snitch-llvm/issues
     steps:
       ########################################
-      ## Prepare
+      ## Checkout
+      ########################################
+      
+      ## This
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      
+      ## LLVM
+      -
+        name: Checkout LLVM
+        uses: actions/checkout@v2
+        with:
+          repository: pulp-platform/snitch-llvm
+          ref: snitch
+          path: llvm-project
+      
+      ## NEWLIB
+      -
+        name: Checkout newlib
+        run: |
+          git clone --depth 1 -b newlib-3.3.0 https://sourceware.org/git/newlib-cygwin.git newlib
+      
+      ########################################
+      ## Build docker container
       ########################################
       -
-        name: Prepare
+        name: Prepare Docker
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          file: docker/linux-ubuntu2004.Dockerfile
+          tags: linux-ubuntu2004:latest
+      
+      ########################################
+      ## Build Info
+      ########################################
+      -
+        name: Build Info
         run: |
-          echo "test" > build-info.txt
-          echo "test2" > ${PKGVERS}.tar.gz
+         docker run -v $PWD:/home/builder -w/home/builder linux-ubuntu2004:latest ./builder-info.sh
+         cat build-info.txt
+      
+      ########################################
+      ## Build
+      ########################################
+      -
+        name: Build
+        run: |
+          docker run -v $PWD:/home/builder -w/home/builder \
+            -e BUGURL=${BUGURL} \
+            -e PKGVERS=${PKGVERS} \
+            linux-ubuntu2004:latest \
+            ./stages/build-riscv32-llvm.sh
 
-      # ########################################
-      # ## Checkout
-      # ########################################
-      
-      # ## This
-      # -
-      #   name: Checkout
-      #   uses: actions/checkout@v2
-      
-      # ## LLVM
-      # -
-      #   name: Checkout LLVM
-      #   uses: actions/checkout@v2
-      #   with:
-      #     repository: pulp-platform/snitch-llvm
-      #     ref: snitch
-      #     path: llvm-project
-      
-      # ## NEWLIB
-      # -
-      #   name: Checkout newlib
-      #   run: |
-      #     git clone --depth 1 -b newlib-3.3.0 https://sourceware.org/git/newlib-cygwin.git newlib
-      
-      # ########################################
-      # ## Build docker container
-      # ########################################
-      # -
-      #   name: Prepare Docker
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #     push: false
-      #     file: docker/linux-ubuntu2004.Dockerfile
-      #     tags: linux-ubuntu2004:latest
-      
-      # ########################################
-      # ## Build Info
-      # ########################################
-      # -
-      #   name: Build Info
-      #   run: |
-      #    docker run -v $PWD:/home/builder -w/home/builder linux-ubuntu2004:latest ./builder-info.sh
-      #    cat build-info.txt
-      
-      # ########################################
-      # ## Build
-      # ########################################
-      # -
-      #   name: Build
-      #   run: |
-      #     docker run -v $PWD:/home/builder -w/home/builder \
-      #       -e BUGURL=${BUGURL} \
-      #       -e PKGVERS=${PKGVERS} \
-      #       linux-ubuntu2004:latest \
-      #       ./stages/build-riscv32-llvm.sh
-
-      # ########################################
-      # ## Package
-      # ########################################
-      # -
-      #   name: Package
-      #   run: |
-      #     tar -czf ${PKGVERS}.tar.gz --transform s/^install/${PKGVERS}/ install
+      ########################################
+      ## Package
+      ########################################
+      -
+        name: Package
+        run: |
+          tar -czf ${PKGVERS}.tar.gz --transform s/^install/${PKGVERS}/ install
 
       ########################################
       ## Upload
@@ -97,10 +88,33 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Build Info
-          path: build-info.txt
+          path: |
+            build-info.txt
       -
         name: Upload Toolchain
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.PKGVERS }}
           path: ${{ env.PKGVERS }}.tar.gz
+
+  ########################################
+  ## Test
+  ########################################
+  test:
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+      - 
+        name: Test
+        run: |
+          docker run -v $PWD:/home/builder -w/home/builder \
+            -e BUGURL=${BUGURL} \
+            -e PKGVERS=${PKGVERS} \
+            linux-ubuntu2004:latest \
+            ./stages/test-llvm.sh
+      -
+        name: Upload Test Info
+        uses: actions/upload-artifact@v2
+        with:
+          name: Test Info
+          path: llvm-tests.log
