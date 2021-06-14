@@ -1,0 +1,29 @@
+# Copyright 2020 ETH Zurich and University of Bologna.
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: scp-test
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    env:
+      SSH_PRIVATE_KEY: ${{secrets.SOURCEFORGE_SSH_PRIVATE_KEY}}
+      SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+      SOURCEFORGE_KEY: ${{ github.workspace }}/../private.key
+    steps:
+      ########################################
+      ## Prepare
+      ########################################
+      -
+        name: Prepare
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${SSH_PRIVATE_KEY}" > ${SOURCEFORGE_KEY}
+          sudo chmod 600 ${SOURCEFORGE_KEY}
+          echo "${SSH_KNOWN_HOSTS}" > ~/.ssh/known_hosts
+          echo "Hello World" > file.txt
+          scp -i ${SOURCEFORGE_KEY} file.txt beeble42brox@frs.sourceforge.net:/home/frs/project/snitch-llvm/nightly/testfile
