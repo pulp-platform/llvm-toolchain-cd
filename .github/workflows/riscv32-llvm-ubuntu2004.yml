@@ -51,7 +51,7 @@ jobs:
       -
         name: Build Info
         run: |
-         docker run -it -v $PWD:/home/builder -w/home/builder linux-ubuntu2004:latest ./builder-info.sh
+         docker run -v $PWD:/home/builder -w/home/builder linux-ubuntu2004:latest ./builder-info.sh
          cat build-info.txt
       
       ########################################
