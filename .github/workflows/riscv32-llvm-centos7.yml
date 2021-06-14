@@ -90,7 +90,6 @@ jobs:
           name: Build Info
           path: |
             build-info.txt
-            llvm-tests.log
       -
         name: Upload Toolchain
         uses: actions/upload-artifact@v2
@@ -105,9 +104,17 @@ jobs:
     needs: build
     runs-on: ubuntu-20.04
     steps:
-      - run: |
-        docker run -v $PWD:/home/builder -w/home/builder \
-          -e BUGURL=${BUGURL} \
-          -e PKGVERS=${PKGVERS} \
-          linux-centos7:latest \
-          ./stages/test-llvm.sh
+      - 
+        name: Test
+        run: |
+          docker run -v $PWD:/home/builder -w/home/builder \
+            -e BUGURL=${BUGURL} \
+            -e PKGVERS=${PKGVERS} \
+            linux-centos7:latest \
+            ./stages/test-llvm.sh
+      -
+        name: Upload Test Info
+        uses: actions/upload-artifact@v2
+        with:
+          name: Test Info
+          path: llvm-tests.log
