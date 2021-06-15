@@ -15,6 +15,7 @@ jobs:
     env:
       PKGVERS: riscv32-snitch-llvm-ubuntu2004-${{ github.run_number }}
       BUGURL: https://github.com/pulp-platform/snitch-llvm/issues
+      BUILDNO: ${{ github.run_number }}
       SSH_PRIVATE_KEY: ${{secrets.SOURCEFORGE_SSH_PRIVATE_KEY}}
       SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
       SOURCEFORGE_KEY: ${{ github.workspace }}/../private.key
@@ -72,6 +73,7 @@ jobs:
           docker run -v $PWD:/home/builder -w/home/builder \
             -e BUGURL=${BUGURL} \
             -e PKGVERS=${PKGVERS} \
+            -e BUILDNO=${BUILDNO} \
             linux-ubuntu2004:latest \
             ./stages/build-riscv32-llvm.sh
 

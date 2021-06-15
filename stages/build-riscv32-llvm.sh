@@ -23,11 +23,13 @@ NEWLIB_EXTRA_OPTS=""
 LLVM_EXTRA_OPTS=""
 if [ "x${BUGURL}" != "x" ]; then
   NEWLIB_EXTRA_OPTS="${NEWLIB_EXTRA_OPTS} --with-bugurl='${BUGURL}'"
-  LLVM_EXTRA_OPTS="${LLVM_EXTRA_OPTS} -DBUG_REPORT_URL='${BUGURL}'"
+  LLVM_EXTRA_OPTS="${LLVM_EXTRA_OPTS} -DPACKAGE_BUGREPORT='${BUGURL}'"
 fi
 if [ "x${PKGVERS}" != "x" ]; then
   NEWLIB_EXTRA_OPTS="${NEWLIB_EXTRA_OPTS} --with-pkgversion='${PKGVERS}'"
-  LLVM_EXTRA_OPTS="${LLVM_EXTRA_OPTS} -DPACKAGE_VENDOR='${PKGVERS}'"
+fi
+if [ "x${BUILDNO}" != "x" ]; then
+  LLVM_EXTRA_OPTS="${LLVM_EXTRA_OPTS} -DLLVM_VERSION_SUFFIX='-${BUILDNO}'"
 fi
 
 # Allow environment to control parallelism
