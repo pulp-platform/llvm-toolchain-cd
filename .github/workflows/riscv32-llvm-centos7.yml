@@ -119,6 +119,17 @@ jobs:
         with:
           name: Test Info
           path: llvm-tests.log
+      - 
+        name: Test Snitch
+        run: |
+          docker run -v $PWD:/home/builder -w/home/builder \
+            linux-centos7:latest ./stages/test-snitch-llvm.sh
+      -
+        name: Upload Snitch Test Info
+        uses: actions/upload-artifact@v2
+        with:
+          name: Snitch Test Info
+          path: snitch-tests.log
 
       ########################################
       ## Deploy
