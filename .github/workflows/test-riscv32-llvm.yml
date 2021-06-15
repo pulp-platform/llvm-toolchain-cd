@@ -27,6 +27,7 @@ jobs:
       -
         name: Prepare Docker
         run: |
+          echo ${{secrets.PAT_DOCKER}} | docker login docker.pkg.github.com -u noah95 --password-stdin
           docker pull docker.pkg.github.com/pulp-platform/snitch-toolchain-cd/snitch-llvm:latest
           docker pull ghcr.io/pulp-platform/snitch:latest
 
