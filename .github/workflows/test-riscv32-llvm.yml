@@ -1,0 +1,50 @@
+# Copyright 2020 ETH Zurich and University of Bologna.
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: test-riscv32-llvm
+
+on: 
+  workflow_dispatch:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      ########################################
+      ## Checkout
+      ########################################
+      
+      ## This
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+            
+      ########################################
+      ## Fetch docker containers
+      ########################################
+      -
+        name: Prepare Docker
+        run: |
+          docker pull docker.pkg.github.com/pulp-platform/snitch-toolchain-cd/snitch-llvm:latest
+          docker pull ghcr.io/pulp-platform/snitch:latest
+
+      
+      ########################################
+      ## Build Tests
+      ########################################
+      -
+        name: Build Tests
+        run: |
+         docker run -v $PWD:/src -w/home/builder snitch-llvm:latest \
+          make PREFIX=/home/builder/riscv32-snitch-llvm/bin -C /src/test/snitch
+      
+      ########################################
+      ## Run Tests
+      ########################################
+      -
+        name: Build Tests
+        run: |
+         docker run -v $PWD:/src ghcr.io/pulp-platform/snitch \
+          make -C /src/test/snitch SHELL=/bin/bash test
