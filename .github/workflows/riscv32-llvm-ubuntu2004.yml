@@ -134,4 +134,4 @@ jobs:
         name: deploy-sourceforge
         run: |
           dstname=`echo ${PKGVERS} | rev | cut -d'-' -f 2- | rev`
-          scp -i ${SOURCEFORGE_KEY} ${PKGVERS}.tar.gz beeble42brox@frs.sourceforge.net:/home/frs/project/snitch-llvm/nightly/${dstname}
+          scp -i ${SOURCEFORGE_KEY} ${PKGVERS}.tar.gz beeble42brox@frs.sourceforge.net:/home/frs/project/snitch-llvm/nightly/${dstname}.tar.gz
