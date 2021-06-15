@@ -38,7 +38,7 @@ jobs:
       -
         name: Build Tests
         run: |
-         docker run -v $PWD:/src -w/home/builder snitch-llvm:latest \
+         docker run -v $PWD:/src -w/home/builder pulp-platform/snitch-toolchain-cd/snitch-llvm:latest \
           make PREFIX=/home/builder/riscv32-snitch-llvm/bin -C /src/test/snitch
       
       ########################################
