@@ -37,7 +37,7 @@ jobs:
         with:
           context: .
           file: docker/snitch-llvm.Dockerfile
-          build-args:
-            - TCTAR=${PKGVERS}.tar.gz
+          build-args: |
+            TCTAR=${PKGVERS}.tar.gz
           tags: ghcr.io/pulp-platform/snitch-toolchain-cd/snitch-llvm:latest
           push: true
