@@ -27,12 +27,12 @@ LD_SCRIPT       = link.ld
 CRT0 					  = runtime/crt0.S
 INC             = -Iruntime
 
-CC 				= $(PREFIX)/clang
-ASM 			= $(PREFIX)/clang
-LD 				= $(PREFIX)/clang
-OBJDUMP   = $(PREFIX)/llvm-objdump
-STRIP     = $(PREFIX)/llvm-strip
-SIZE     	= $(PREFIX)/llvm-size --radix=16 
+CC 				= $(PREFIX)clang
+ASM 			= $(PREFIX)clang
+LD 				= $(PREFIX)clang
+OBJDUMP   = $(PREFIX)llvm-objdump
+STRIP     = $(PREFIX)llvm-strip
+SIZE     	= $(PREFIX)llvm-size --radix=16 
 
 OPT 					 ?= 1
 FLAGS           = -O$(OPT) -g -Wall -mcpu=snitch -mcmodel=medany -static -std=gnu99 
@@ -66,6 +66,9 @@ $(BUILD)/%: src/%.c $(RUNTIME_SRCS)
 	$(OBJDUMP) $(OBJDUMP_FLAGS) -D $@ > $(DUMP)/$*.dump
 	$(STRIP) $@ -g -S -d --strip-debug
 
+clean:
+	rm -rf $(BUILD) $(LOG) $(DUMP)
+
 ############################################################
 # test
 ############################################################
@@ -90,4 +93,4 @@ test:
 ############################################################
 # phony
 ############################################################
-.PHONY: all clean run runsim fmt test
+.PHONY: all clean test
