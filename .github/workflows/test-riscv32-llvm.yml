@@ -44,11 +44,12 @@ jobs:
       -
         name: Upload Build Artifacts
         uses: actions/upload-artifact@v2
+        if: always()
         with:
           name: Build Info
           path: |
-            /src/test/snitch/bin
-            /src/test/snitch/dump
+            test/snitch/bin
+            test/snitch/dump
       
       ########################################
       ## Run Tests
@@ -61,7 +62,8 @@ jobs:
       -
         name: Upload Test Artifacts
         uses: actions/upload-artifact@v2
+        if: always()
         with:
           name: Test Info
           path: |
-            /src/test/snitch/log
+            test/snitch/log
