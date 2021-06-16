@@ -9,20 +9,20 @@ LABEL maintainer huettern@ethz.ch
 
 RUN apt-get -y update && \
     DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y git build-essential git python python3 python3-distutils
-
-# Copy-in toolchain tar
-RUN ls -al; pwd
-COPY ./${TCTAR} /tmp/toolchain.tar.gz
+    apt-get install -y git build-essential git python python3 python3-distutils wget
 
 # The user running
 RUN useradd -m -u 1002 builder
 USER builder
 
 # Extract toolchain, cleanup and modify path
-RUN cd /home/builder && mkdir -p .local/riscv32-snitch-llvm && \
-  tar xzf /tmp/toolchain.tar.gz -C .local/riscv32-snitch-llvm --strip-components 1 && \
-  .local/riscv32-snitch-llvm/bin/clang --version
+RUN \
+    cd /home/builder && mkdir -p .local/riscv32-snitch-llvm && \
+    wget -qO- \
+    https://sourceforge.net/projects/snitch-llvm/files/nightly/riscv32-snitch-llvm-ubuntu2004.tar.gz/download | \
+    tar -xvz -C .local/riscv32-snitch-llvm --strip-components 1 && \
+    .local/riscv32-snitch-llvm/bin/clang --version && \
+    .local/riscv32-snitch-llvm/bin/llvm-config --version
 
 ENV PATH "/home/builder/.local/riscv32-snitch-llvm/bin:${PATH}"
 

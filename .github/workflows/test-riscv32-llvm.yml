@@ -24,21 +24,17 @@ jobs:
       ########################################
       ## Fetch docker containers
       ########################################
-      -
-        name: Prepare Docker
-        run: |
-          echo ${{secrets.PAT_DOCKER}} | docker login docker.pkg.github.com -u noah95 --password-stdin
-          docker pull docker.pkg.github.com/pulp-platform/snitch-toolchain-cd/snitch-llvm:latest
-          docker pull ghcr.io/pulp-platform/snitch:latest
+      - 
+        name: Build Docker for Compiling
+        uses: ./.github/workflows/build-docker
 
-      
       ########################################
       ## Build Tests
       ########################################
       -
         name: Build Tests
         run: |
-         docker run -v $PWD:/src -w/home/builder docker.pkg.github.com/pulp-platform/snitch-toolchain-cd/snitch-llvm:latest \
+         docker run -v $PWD:/src -w/home/builder snitch-llvm:latest \
           make PREFIX=/home/builder/riscv32-snitch-llvm/bin -C /src/test/snitch
       
       ########################################
