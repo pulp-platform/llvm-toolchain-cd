@@ -12,7 +12,7 @@ RUN apt-get -y update && \
     apt-get install -y git build-essential git python python3 python3-distutils
 
 # Copy-in toolchain tar
-COPY ${TCTAR} /tmp/toolchain.tar.gz
+COPY ./${TCTAR} /tmp/toolchain.tar.gz
 
 # The user running
 RUN useradd -m -u 1002 builder
