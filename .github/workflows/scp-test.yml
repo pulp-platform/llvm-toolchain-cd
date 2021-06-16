@@ -17,8 +17,8 @@ jobs:
       ## Build Docker image and publish to pulp-platform's GHCR.
       ########################################
       - 
-        name: Checkout
         uses: actions/checkout@v2
+      - 
         uses: docker/setup-buildx-action@v1
       - 
         name: Fetch Toolchain
