@@ -12,6 +12,7 @@ RUN apt-get -y update && \
     apt-get install -y git build-essential git python python3 python3-distutils
 
 # Copy-in toolchain tar
+RUN ls -al; pwd
 COPY ./${TCTAR} /tmp/toolchain.tar.gz
 
 # The user running
