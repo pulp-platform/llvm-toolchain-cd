@@ -41,6 +41,14 @@ jobs:
         run: |
          docker run -u root -v $PWD:/src snitch-llvm:latest \
           make -C /src/test/snitch
+      -
+        name: Upload Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Build Info
+          path: |
+            /src/test/snitch/bin
+            /src/test/snitch/dump
       
       ########################################
       ## Run Tests
@@ -50,3 +58,10 @@ jobs:
         run: |
          docker run -v $PWD:/src ghcr.io/pulp-platform/snitch:latest \
           make -C /src/test/snitch SHELL=/bin/bash test
+      -
+        name: Upload Test Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Test Info
+          path: |
+            /src/test/snitch/log
