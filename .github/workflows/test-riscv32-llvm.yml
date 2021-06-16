@@ -24,9 +24,14 @@ jobs:
       ########################################
       ## Fetch docker containers
       ########################################
-      - 
-        name: Build Docker for Compiling
-        uses: ./.github/workflows/build-docker
+      - name: Docker build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/snitch-llvm.Dockerfile
+          tags: |
+            snitch-llvm:latest
+          push: false
 
       ########################################
       ## Build Tests
