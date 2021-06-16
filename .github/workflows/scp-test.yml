@@ -11,19 +11,33 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     env:
-      SSH_PRIVATE_KEY: ${{secrets.SOURCEFORGE_SSH_PRIVATE_KEY}}
-      SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
-      SOURCEFORGE_KEY: ${{ github.workspace }}/../private.key
+      PKGVERS: riscv32-snitch-llvm-ubuntu2004.tar.gz
     steps:
       ########################################
-      ## Prepare
+      ## Build Docker image and publish to pulp-platform's GHCR.
       ########################################
-      -
-        name: Prepare
+      - 
+        name: Checkout
+        uses: actions/checkout@v2
+        uses: docker/setup-buildx-action@v1
+      - 
+        name: Fetch Toolchain
         run: |
-          mkdir -p ~/.ssh/
-          echo "${SSH_PRIVATE_KEY}" > ${SOURCEFORGE_KEY}
-          sudo chmod 600 ${SOURCEFORGE_KEY}
-          echo "${SSH_KNOWN_HOSTS}" > ~/.ssh/known_hosts
-          echo "Hello World" > file.txt
-          scp -i ${SOURCEFORGE_KEY} file.txt beeble42brox@frs.sourceforge.net:/home/frs/project/snitch-llvm/nightly/testfile
+          wget https://sourceforge.net/projects/snitch-llvm/files/nightly/riscv32-snitch-llvm-ubuntu2004.tar.gz/download \
+            -O riscv32-snitch-llvm-ubuntu2004.tar.gz
+      -
+        name: GHCR Log-in
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: noah95
+          password: ${{ secrets.PAT_DOCKER }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/snitch-llvm.Dockerfile
+          build-args:
+            - TCTAR=${PKGVERS}.tar.gz
+          tags: ghcr.io/pulp-platform/snitch-toolchain-cd/snitch-llvm:latest
+          push: true
