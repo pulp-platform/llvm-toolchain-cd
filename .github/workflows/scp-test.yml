@@ -31,7 +31,7 @@ jobs:
         name: GHCR Log-in
         uses: docker/login-action@v1
         with:
-          registry: ghcr.io
+          registry: docker.pkg.github.com
           username: noah95
           password: ${{ secrets.PAT_DOCKER }}
       - 
@@ -45,5 +45,5 @@ jobs:
           file: docker/snitch-llvm.Dockerfile
           build-args: |
             TCTAR=${{ env.PKGVERS }}.tar.gz
-          tags: ghcr.io/pulp-platform/snitch-toolchain-cd/snitch-llvm:latest
+          tags: docker.pkg.github.com/pulp-platform/snitch-toolchain-cd/snitch-llvm:latest
           push: true
