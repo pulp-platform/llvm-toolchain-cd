@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     env:
-      PKGVERS: riscv32-snitch-llvm-ubuntu2004.tar.gz
+      PKGVERS: riscv32-snitch-llvm-ubuntu2004
     steps:
       ########################################
       ## Build Docker image and publish to pulp-platform's GHCR.
@@ -24,7 +24,7 @@ jobs:
         name: Fetch Toolchain
         run: |
           wget https://sourceforge.net/projects/snitch-llvm/files/nightly/riscv32-snitch-llvm-ubuntu2004.tar.gz/download \
-            -O riscv32-snitch-llvm-ubuntu2004.tar.gz
+            -O ${PKGVERS}.tar.gz
       -
         name: GHCR Log-in
         uses: docker/login-action@v1
