@@ -74,7 +74,7 @@ clean:
 # test
 ############################################################
 
-test:
+test: $(addprefix $(BUILD)/, $(TARGETS))
 	@mkdir -p $(LOG); fails=0; successes=0; \
 	for test in $(TARGETS) ; do \
 		$(BANSHEE) $(BANSHEE_FLAGS) $(BUILD)/$$test --trace 2>$(LOG)/$$test 1>$(LOG)/$$test.trace; \
@@ -90,6 +90,19 @@ test:
 	done; \
 	echo "Total failed: $$fails/`expr $$fails + $$successes`"; \
 	exit $$fails
+
+test-%:
+	test=$*; \
+	$(BANSHEE) $(BANSHEE_FLAGS) $(BUILD)/$$test --trace 2>$(LOG)/$$test 1>$(LOG)/$$test.trace; \
+	TMP=$${PIPESTATUS[0]}; \
+	$(SPIKE) < $(LOG)/$$test.trace > $(LOG)/$$test.txt ||:; \
+	if [ $$TMP -eq 0 ]; then \
+			echo -e "$$test exit code: $$TMP: \033[0;32mSUCCESS\033[0m" 1>&2; \
+	else \
+			echo -e "$$test exit code: $$TMP: \033[0;31mFAILED\033[0m" 1>&2; \
+			fails=`expr $$fails + 1`; \
+	fi;
+
 
 ############################################################
 # phony
