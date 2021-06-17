@@ -14,7 +14,7 @@ jobs:
   #############################
   snitch:
     container:
-      image: ghcr.io/noah95/snitch:0.1.0-rc1
+      image: ghcr.io/pulp-platform/snitch:latest
     runs-on: ubuntu-18.04
     name: Functional tests on Banshee
     steps:
@@ -40,38 +40,3 @@ jobs:
         name: Test Info
         path: |
           test/snitch/log
-
-      # ########################################
-      # ## Build Tests
-      # ########################################
-      # -
-      #   name: Build Tests
-      #   run: |
-      #    docker run -u root -v $PWD:/src snitch-llvm:latest \
-      #     make -C /src/test/snitch
-      # -
-      #   name: Upload Build Artifacts
-      #   uses: actions/upload-artifact@v2
-      #   if: always()
-      #   with:
-      #     name: Build Info
-      #     path: |
-      #       test/snitch/bin
-      #       test/snitch/dump
-      
-      # ########################################
-      # ## Run Tests
-      # ########################################
-      # -
-      #   name: Build Tests
-      #   run: |
-      #    docker run -v $PWD:/src ghcr.io/pulp-platform/snitch:latest \
-      #     make -C /src/test/snitch SHELL=/bin/bash test
-      # -
-      #   name: Upload Test Artifacts
-      #   uses: actions/upload-artifact@v2
-      #   if: always()
-      #   with:
-      #     name: Test Info
-      #     path: |
-      #       test/snitch/log
