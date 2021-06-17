@@ -34,6 +34,7 @@ LD 				= $(PREFIX)clang
 OBJDUMP   = $(PREFIX)llvm-objdump
 STRIP     = $(PREFIX)llvm-strip
 SIZE     	= $(PREFIX)llvm-size --radix=16 
+LLVM_CONFIG = $(PREFIX)llvm-config
 
 OPT 					 ?= 1
 FLAGS           = -O$(OPT) -g -Wall -mcpu=snitch -mcmodel=medany -static -std=gnu99 
@@ -58,6 +59,12 @@ OBJDUMP_FLAGS = --mcpu=snitch --debug-vars
 ############################################################
 # build
 ############################################################
+
+version:
+	@echo "== Version ========================"
+	@$(CC) --version
+	@$(LLVM_CONFIG) --version
+	@echo "==================================="
 
 all: $(addprefix $(BUILD)/, $(TARGETS))
 $(BUILD)/%: src/%.c $(RUNTIME_SRCS)
@@ -107,4 +114,4 @@ test-%:
 ############################################################
 # phony
 ############################################################
-.PHONY: all clean test
+.PHONY: all clean test version
