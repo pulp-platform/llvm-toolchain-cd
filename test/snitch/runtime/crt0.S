@@ -88,9 +88,7 @@ reset_vector:
     ## Init data
 data_init:
     # skip data init, banshee has done that for us already..
-#if defined(BANSHEE)
     j stack_init
-#endif
     # only core0 should do data init
     addi x26, x0, 0
     bne a0, x26, stack_init
@@ -133,33 +131,6 @@ stack_init:
     sll     t0, t0, t1 
     sub     sp, sp, t0
 
-# word-wise pattern fill of stack to verify stack usage
-# takes ~5us at 80MHz
-#ifndef SIMULATION
-# StackFill:
-#     # t0 holds pointer to stack
-#     add     t0, x0, sp
-#     # load 0x54545454 to t1 as fill pattern
-#     lui     t1, 0x54545
-#     addi    t1, t1, 0x454
-#     # t3 contains number of bytes in stack
-#     la      t2, StackShift # set some stack-space aside for each hart
-#     addi    t3, x0, 1
-#     sll     t3, t3, t2
-# StackFillLoop:
-#     # store pattern word at current pointer
-#     sw      t1, 0(t0)
-#     # decrement pointer in word increments
-#     addi    t0, t0, -4
-#     # decrement counter
-#     addi    t3, t3, -4
-#     # branch if not done
-#     bne     t3, x0, StackFillLoop
-#endif
-
-rdy:
-    # ## Put all cores to sleep so that they can be started if necessary
-    # wfi
 run:
     # call    __libc_init_array
     call    main
@@ -185,11 +156,6 @@ fail:
 done:
     wfi
     j done
-
-# .section ".eoc_address","aw",@progbits
-# .align 6
-# .globl eoc_address
-# eoc_address: .dword 0
 
 .section .text
 .section .data
