@@ -6,6 +6,11 @@ name: riscv32-llvm-ubuntu2004
 
 on: 
   workflow_dispatch:
+    inputs:
+      llvmref:
+        description: 'Ref from the LLVM Repo'
+        required: false
+        default: 'snitch'
   schedule:
     - cron: '42 1 * * 4'
 
@@ -35,7 +40,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: pulp-platform/snitch-llvm
-          ref: snitch
+          ref: ${{ github.event.inputs.llvmref }}
           path: llvm-project
       
       ## NEWLIB
