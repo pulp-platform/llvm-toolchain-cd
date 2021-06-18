@@ -13,6 +13,8 @@ jobs:
   # SW on Banshee (Container) #
   #############################
   snitch:
+    # Limit execution time if any test should stall
+    timeout-minutes: 2
     container:
       image: ghcr.io/pulp-platform/snitch:latest
     runs-on: ubuntu-18.04
