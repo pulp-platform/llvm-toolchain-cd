@@ -6,6 +6,7 @@
 # Targets
 TARGETS += frep_single hello_world ssr_simple ssr_inst_check 
 TARGETS += ssr_multi_use ssr_intrinsic sdma_simple frep_inference 
+TARGETS += ssr_push
 
 # Tests that are ignored from exit code check
 IGNORE_TESTS += frep_inference
