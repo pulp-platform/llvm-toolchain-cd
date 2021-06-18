@@ -7,19 +7,27 @@
 
 WORKSPACE=$PWD
 
+# default location for llvm binaries and tests
+if [ "x${LLVM_BIN}" == "x" ]; then
+  LLVM_BIN=${WORKSPACE}/build/llvm/bin/
+fi
+if [ "x${LLVM_SRC}" == "x" ]; then
+  LLVM_SRC=${WORKSPACE}/llvm-project
+fi
+
 # List all tests here that shall be run by this script
 TESTS=(
-    "../clang/test/CodeGen/RISCV/riscv-sdma-intrinsics.c"
-    "../clang/test/CodeGen/RISCV/riscv-ssr-intrinsics.c"
-    "../llvm/test/CodeGen/RISCV/freploop.ll"
-    "../llvm/test/MC/RISCV/rv32xfrep-valid.s"
-    "../llvm/test/MC/RISCV/rv32xdma-valid.s"
-    "../llvm/test/MC/RISCV/rv32xssr-valid.s"
-    "../llvm/test/CodeGen/RISCV/sdma-intrinsics.ll"
-    "../llvm/test/CodeGen/RISCV/sdma-pseudo-instructions.mir"
-    "../llvm/test/CodeGen/RISCV/ssr-pseudo-instructions.mir"
-    "../llvm/test/CodeGen/RISCV/ssr-register-reserving.ll"
-    "../llvm/test/CodeGen/RISCV/ssr-register-merging.mir"
+    "${LLVM_SRC}/clang/test/CodeGen/RISCV/riscv-sdma-intrinsics.c"
+    "${LLVM_SRC}/clang/test/CodeGen/RISCV/riscv-ssr-intrinsics.c"
+    "${LLVM_SRC}/llvm/test/CodeGen/RISCV/freploop.ll"
+    "${LLVM_SRC}/llvm/test/MC/RISCV/rv32xfrep-valid.s"
+    "${LLVM_SRC}/llvm/test/MC/RISCV/rv32xdma-valid.s"
+    "${LLVM_SRC}/llvm/test/MC/RISCV/rv32xssr-valid.s"
+    "${LLVM_SRC}/llvm/test/CodeGen/RISCV/sdma-intrinsics.ll"
+    "${LLVM_SRC}/llvm/test/CodeGen/RISCV/sdma-pseudo-instructions.mir"
+    "${LLVM_SRC}/llvm/test/CodeGen/RISCV/ssr-pseudo-instructions.mir"
+    "${LLVM_SRC}/llvm/test/CodeGen/RISCV/ssr-register-reserving.ll"
+    "${LLVM_SRC}/llvm/test/CodeGen/RISCV/ssr-register-merging.mir"
   )
 
 # Allow environment to control parallelism
@@ -27,5 +35,4 @@ if [ "x${PARALLEL_JOBS}" == "x" ]; then
   PARALLEL_JOBS=$(nproc)
 fi
 
-cd ${WORKSPACE}/build/llvm
-bin/llvm-lit -v -o ${WORKSPACE}/snitch-tests.log -j${PARALLEL_JOBS} "${TESTS[@]}"
+${LLVM_BIN}/llvm-lit -v -o ${WORKSPACE}/snitch-tests.log -j${PARALLEL_JOBS} "${TESTS[@]}"
