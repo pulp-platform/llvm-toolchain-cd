@@ -77,6 +77,6 @@ int main(int hartid) {
       errs = src_buf[n * sstrd + b] != dst_buf[n * dstrd + b] ? errs + 1 : errs;
     }
   }
-  
+
   return errs;
 }

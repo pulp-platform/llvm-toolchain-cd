@@ -2,8 +2,8 @@
 // Licensed under the Apache License, Version 2.0, see LICENSE for details.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <stdint.h>
 #include <math.h>
+#include <stdint.h>
 
 #include "runtime.h"
 
@@ -55,18 +55,18 @@ int main(void) {
   __builtin_ssr_enable();
   instRet = read_csr(minstret);
 
-  #pragma frep infer
+#pragma frep infer
   for (unsigned i = 0; i < 128; ++i) {
     // a freppable loop
     sum += __builtin_ssr_pop(0) * __builtin_ssr_pop(1);
   }
-  
+
   __builtin_ssr_disable();
   instRet = read_csr(minstret) - instRet;
-  
+
   // should have not retired more than ~128+20 insnts with frep
-  if(instRet > 128+10) return 1;
-  if(fabs(sum - gold) > 0.001) return 2;
+  if (instRet > 128 + 10) return 1;
+  if (fabs(sum - gold) > 0.001) return 2;
 
   /// Same without frep
   sum = 0.0;
@@ -83,13 +83,13 @@ int main(void) {
     // a freppable loop
     sum += __builtin_ssr_pop(0) * __builtin_ssr_pop(1);
   }
-  
+
   __builtin_ssr_disable();
   instRet = read_csr(minstret) - instRet;
-  
+
   // should have not retired more than ~3*128 insnts with frep
-  if(instRet < 3*128) return 3;
-  if(fabs(sum - gold) > 0.001) return 4;
+  if (instRet < 3 * 128) return 3;
+  if (fabs(sum - gold) > 0.001) return 4;
 
   /// and again WITH frep
   sum = 0.0;
@@ -102,18 +102,18 @@ int main(void) {
   __builtin_ssr_enable();
   instRet = read_csr(minstret);
 
-  #pragma frep infer
+#pragma frep infer
   for (unsigned i = 0; i < 128; ++i) {
     // a freppable loop
     sum += __builtin_ssr_pop(0) * __builtin_ssr_pop(1);
   }
-  
+
   __builtin_ssr_disable();
   instRet = read_csr(minstret) - instRet;
-  
+
   // should have not retired more than ~3*128 insnts with frep
-  if(instRet > 128+10) return 5;
-  if(fabs(sum - gold) > 0.001) return 6;
+  if (instRet > 128 + 10) return 5;
+  if (fabs(sum - gold) > 0.001) return 6;
 
   /// All is well
   return 0;
