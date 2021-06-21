@@ -1,0 +1,44 @@
+# Copyright 2020 ETH Zurich and University of Bologna.
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: test-riscv32-llvm
+
+on: 
+  workflow_dispatch:
+  push:
+
+jobs:
+  #############################
+  # SW on Banshee (Container) #
+  #############################
+  snitch:
+    # Limit execution time if any test should stall
+    timeout-minutes: 2
+    container:
+      image: ghcr.io/pulp-platform/snitch:latest
+    runs-on: ubuntu-18.04
+    name: Functional tests on Banshee
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build tests
+      working-directory: test/snitch
+      run: make version all
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: Build Info
+        path: |
+          test/snitch/bin
+          test/snitch/dump
+    - name: Run tests
+      working-directory: test/snitch
+      run: make SHELL=/bin/bash test
+    - name: Upload Test Artifacts
+      uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: Test Info
+        path: |
+          test/snitch/log
