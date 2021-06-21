@@ -6,10 +6,10 @@
 # Targets
 TARGETS += frep_single hello_world ssr_simple ssr_inst_check 
 TARGETS += ssr_multi_use ssr_intrinsic sdma_simple frep_inference 
-TARGETS += ssr_push
+TARGETS += ssr_push frep_nested
 
 # Tests that are ignored from exit code check
-IGNORE_TESTS += frep_inference
+IGNORE_TESTS += 
 
 RUNTIME_SRCS    = $(CRT0)
 
@@ -40,8 +40,8 @@ STRIP     = $(PREFIX)llvm-strip
 SIZE     	= $(PREFIX)llvm-size --radix=16 
 LLVM_CONFIG = $(PREFIX)llvm-config
 
-OPT 					 ?= 0
-FLAGS           = -O$(OPT) -g -Wall -mcpu=snitch -mcmodel=medany -static -std=gnu99 
+OPT 					 ?= 1 # FREP passses require at least -O1
+FLAGS           = -O$(OPT) -Wall -mcpu=snitch -mcmodel=medany -static -std=gnu99 
 FLAGS          += -ffast-math -fno-common -fno-builtin-printf
 FLAGS          += -mllvm -enable-misched=false 
 FLAGS          += -Xclang -disable-O0-optnone
@@ -50,10 +50,13 @@ BANSHEE_FLAGS   = --num-cores 1 --no-opt-llvm --no-opt-jit
 SNITCH_LOG     ?= info
 
 # Debugging
-# FLAGS    += -save-stats
+# FLAGS    += -mllvm -stats
 # FLAGS    += -mllvm -debug-only=snitch-freploops
 # FLAGS    += -mllvm -print-before=snitch-freploops
-# FLAGS    += -mllvm -debug-only=riscv-lower
+# FLAGS    += -mllvm -print-after=snitch-freploops
+# FLAGS    += -mllvm -print-before=snitch-freploops
+# FLAGS    += -mllvm -debug-only=licm
+# FLAGS    += -mllvm -print-after=licm
 # FLAGS    += -mllvm -print-after-all
 # FLAGS    += -mllvm -debug-only=riscv-ssr -mllvm -print-before=riscv-ssr
 # FLAGS    += -mllvm -ssr-noregmerge

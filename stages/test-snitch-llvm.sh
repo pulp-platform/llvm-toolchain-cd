@@ -20,6 +20,7 @@ TESTS=(
     "${LLVM_SRC}/clang/test/CodeGen/RISCV/riscv-sdma-intrinsics.c"
     "${LLVM_SRC}/clang/test/CodeGen/RISCV/riscv-ssr-intrinsics.c"
     "${LLVM_SRC}/llvm/test/CodeGen/RISCV/freploop.ll"
+    "${LLVM_SRC}/llvm/test/CodeGen/RISCV/freploop-nested.ll"
     "${LLVM_SRC}/llvm/test/MC/RISCV/rv32xfrep-valid.s"
     "${LLVM_SRC}/llvm/test/MC/RISCV/rv32xdma-valid.s"
     "${LLVM_SRC}/llvm/test/MC/RISCV/rv32xssr-valid.s"
