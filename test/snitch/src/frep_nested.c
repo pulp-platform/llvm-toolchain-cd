@@ -195,6 +195,8 @@ int nested_4(void) {
     }
   }
 
+  __builtin_ssr_barrier(0);
+  __builtin_ssr_barrier(1);
   __builtin_ssr_disable();
   instRet = read_csr(minstret) - instRet;
 
