@@ -49,23 +49,23 @@ int nested_1(void) {
   /**
    * Nested FREP loop
    */
-  
+
   double sum = 0.0;
 
-  __builtin_ssr_setup_bound_stride_1d(0, 128-1, 8);
-  __builtin_ssr_setup_bound_stride_2d(0, 8-1, -8*(128-1));
-  __builtin_ssr_setup_repetition(0,0);
-  __builtin_ssr_setup_bound_stride_1d(1, 128-1, 8);
-  __builtin_ssr_setup_bound_stride_2d(1, 8-1, -8*(128-1));
-  __builtin_ssr_setup_repetition(1,0);
-  __builtin_ssr_read(0, 2-1, a);
-  __builtin_ssr_read(1, 2-1, b);
+  __builtin_ssr_setup_bound_stride_1d(0, 128 - 1, 8);
+  __builtin_ssr_setup_bound_stride_2d(0, 8 - 1, -8 * (128 - 1));
+  __builtin_ssr_setup_repetition(0, 0);
+  __builtin_ssr_setup_bound_stride_1d(1, 128 - 1, 8);
+  __builtin_ssr_setup_bound_stride_2d(1, 8 - 1, -8 * (128 - 1));
+  __builtin_ssr_setup_repetition(1, 0);
+  __builtin_ssr_read(0, 2 - 1, a);
+  __builtin_ssr_read(1, 2 - 1, b);
 
   __builtin_ssr_enable();
   instRet = read_csr(minstret);
 
   for (int i = 0; i < 8; ++i) {
-    #pragma frep infer
+#pragma frep infer
     for (unsigned i = 0; i < 128; ++i) {
       // a freppable loop
       sum += __builtin_ssr_pop(0) * __builtin_ssr_pop(1);
@@ -75,10 +75,10 @@ int nested_1(void) {
   __builtin_ssr_disable();
   instRet = read_csr(minstret) - instRet;
 
-  // should have not retired more than 
+  // should have not retired more than
   // 8*(1+1+128+1+1+1) (li, frep, 128*fmadd, fmv, addi, bne)
-  if (instRet > 8*(1+1+128+1+1+1) + 10) return 1;
-  if (fabs(sum - 8.0*gold) > 0.001) return 2;
+  if (instRet > 8 * (1 + 1 + 128 + 1 + 1 + 1) + 10) return 1;
+  if (fabs(sum - 8.0 * gold) > 0.001) return 2;
   return 0;
 }
 
@@ -88,24 +88,24 @@ int nested_2(void) {
   /**
    * Nested FREP loop with unrolled outer loop
    */
-  
+
   double sum = 0.0;
 
-  __builtin_ssr_setup_bound_stride_1d(0, 128-1, 8);
-  __builtin_ssr_setup_bound_stride_2d(0, 8-1, -8*(128-1));
-  __builtin_ssr_setup_repetition(0,0);
-  __builtin_ssr_setup_bound_stride_1d(1, 128-1, 8);
-  __builtin_ssr_setup_bound_stride_2d(1, 8-1, -8*(128-1));
-  __builtin_ssr_setup_repetition(1,0);
-  __builtin_ssr_read(0, 2-1, a);
-  __builtin_ssr_read(1, 2-1, b);
+  __builtin_ssr_setup_bound_stride_1d(0, 128 - 1, 8);
+  __builtin_ssr_setup_bound_stride_2d(0, 8 - 1, -8 * (128 - 1));
+  __builtin_ssr_setup_repetition(0, 0);
+  __builtin_ssr_setup_bound_stride_1d(1, 128 - 1, 8);
+  __builtin_ssr_setup_bound_stride_2d(1, 8 - 1, -8 * (128 - 1));
+  __builtin_ssr_setup_repetition(1, 0);
+  __builtin_ssr_read(0, 2 - 1, a);
+  __builtin_ssr_read(1, 2 - 1, b);
 
   __builtin_ssr_enable();
   instRet = read_csr(minstret);
 
-  #pragma unroll
+#pragma unroll
   for (int j = 0; j < 8; ++j) {
-    #pragma frep infer
+#pragma frep infer
     for (unsigned i = 0; i < 128; ++i) {
       // a freppable loop
       sum += __builtin_ssr_pop(0) * __builtin_ssr_pop(1);
@@ -115,10 +115,10 @@ int nested_2(void) {
   __builtin_ssr_disable();
   instRet = read_csr(minstret) - instRet;
 
-  // should have not retired more than 
+  // should have not retired more than
   // 8*(1+1+128+1) (li, frep, 128*fmadd, fmv, addi, bne)
-  if (instRet > 8*(1+1+128+1) + 10) return 3;
-  if (fabs(sum - 8.0*gold) > 0.001) return 4;
+  if (instRet > 8 * (1 + 1 + 128 + 1) + 10) return 3;
+  if (fabs(sum - 8.0 * gold) > 0.001) return 4;
   return 0;
 }
 
@@ -128,24 +128,24 @@ int nested_3(void) {
   /**
    * Double-nested FREP loop
    */
-  
+
   double sum = 0.0;
 
-  __builtin_ssr_setup_bound_stride_1d(0, 128-1, 8);
-  __builtin_ssr_setup_bound_stride_2d(0, 8-1, -8*(128-1));
-  __builtin_ssr_setup_repetition(0,0);
-  __builtin_ssr_setup_bound_stride_1d(1, 128-1, 8);
-  __builtin_ssr_setup_bound_stride_2d(1, 8-1, -8*(128-1));
-  __builtin_ssr_setup_repetition(1,0);
-  __builtin_ssr_read(0, 2-1, a);
-  __builtin_ssr_read(1, 2-1, b);
+  __builtin_ssr_setup_bound_stride_1d(0, 128 - 1, 8);
+  __builtin_ssr_setup_bound_stride_2d(0, 8 - 1, -8 * (128 - 1));
+  __builtin_ssr_setup_repetition(0, 0);
+  __builtin_ssr_setup_bound_stride_1d(1, 128 - 1, 8);
+  __builtin_ssr_setup_bound_stride_2d(1, 8 - 1, -8 * (128 - 1));
+  __builtin_ssr_setup_repetition(1, 0);
+  __builtin_ssr_read(0, 2 - 1, a);
+  __builtin_ssr_read(1, 2 - 1, b);
 
   __builtin_ssr_enable();
   instRet = read_csr(minstret);
 
   for (int j = 0; j < 2; ++j) {
     for (int k = 0; k < 4; ++k) {
-      #pragma frep infer
+#pragma frep infer
       for (unsigned i = 0; i < 128; ++i) {
         // a freppable loop
         sum += __builtin_ssr_pop(0) * __builtin_ssr_pop(1);
@@ -156,10 +156,10 @@ int nested_3(void) {
   __builtin_ssr_disable();
   instRet = read_csr(minstret) - instRet;
 
-  // should have not retired more than 
+  // should have not retired more than
   // 8*(li, frep, 128*fmadd, fmv, j) 4*(addi, beq, mv) + 2*(adi, bnez)
-  if (instRet > 8*(1+1+128+1+1) + 4*3 + 2*2 + 20) return 5;
-  if (fabs(sum - 8.0*gold) > 0.001) return 6;
+  if (instRet > 8 * (1 + 1 + 128 + 1 + 1) + 4 * 3 + 2 * 2 + 20) return 5;
+  if (fabs(sum - 8.0 * gold) > 0.001) return 6;
   return 0;
 }
 
@@ -169,25 +169,25 @@ int nested_4(void) {
   /**
    * Double-nested FREP loop with unrolling
    */
-  
+
   double sum = 0.0;
 
-  __builtin_ssr_setup_bound_stride_1d(0, 128-1, 8);
-  __builtin_ssr_setup_bound_stride_2d(0, 8-1, -8*(128-1));
-  __builtin_ssr_setup_repetition(0,0);
-  __builtin_ssr_setup_bound_stride_1d(1, 128-1, 8);
-  __builtin_ssr_setup_bound_stride_2d(1, 8-1, -8*(128-1));
-  __builtin_ssr_setup_repetition(1,0);
-  __builtin_ssr_read(0, 2-1, a);
-  __builtin_ssr_read(1, 2-1, b);
+  __builtin_ssr_setup_bound_stride_1d(0, 128 - 1, 8);
+  __builtin_ssr_setup_bound_stride_2d(0, 8 - 1, -8 * (128 - 1));
+  __builtin_ssr_setup_repetition(0, 0);
+  __builtin_ssr_setup_bound_stride_1d(1, 128 - 1, 8);
+  __builtin_ssr_setup_bound_stride_2d(1, 8 - 1, -8 * (128 - 1));
+  __builtin_ssr_setup_repetition(1, 0);
+  __builtin_ssr_read(0, 2 - 1, a);
+  __builtin_ssr_read(1, 2 - 1, b);
 
   __builtin_ssr_enable();
   instRet = read_csr(minstret);
 
   for (int j = 0; j < 2; ++j) {
-    #pragma unroll
+#pragma unroll
     for (int k = 0; k < 4; ++k) {
-      #pragma frep infer
+#pragma frep infer
       for (unsigned i = 0; i < 128; ++i) {
         // a freppable loop
         sum += __builtin_ssr_pop(0) * __builtin_ssr_pop(1);
@@ -198,10 +198,10 @@ int nested_4(void) {
   __builtin_ssr_disable();
   instRet = read_csr(minstret) - instRet;
 
-  // should have not retired more than 
+  // should have not retired more than
   // 8*(li, frep, 128*fmadd, fmv, j) 2*(addi, beq, mv)
-  if (instRet > 8*(1+1+128+1) + 2*3 + 10) return 7;
-  if (fabs(sum - 8.0*gold) > 0.001) return 8;
+  if (instRet > 8 * (1 + 1 + 128 + 1) + 2 * 3 + 10) return 7;
+  if (fabs(sum - 8.0 * gold) > 0.001) return 8;
   return 0;
 }
 
@@ -209,17 +209,17 @@ int main(void) {
   int ret;
 
   ret = nested_1();
-  if(ret) return ret;
+  if (ret) return ret;
 
   ret = nested_2();
-  if(ret) return ret;
+  if (ret) return ret;
 
   ret = nested_3();
-  if(ret) return ret;
+  if (ret) return ret;
 
   ret = nested_4();
-  if(ret) return ret;
-  
+  if (ret) return ret;
+
   /// All is well
   return 0;
 }
