@@ -29,6 +29,8 @@ TESTS=(
     "${LLVM_SRC}/llvm/test/CodeGen/RISCV/ssr-pseudo-instructions.mir"
     "${LLVM_SRC}/llvm/test/CodeGen/RISCV/ssr-register-reserving.ll"
     "${LLVM_SRC}/llvm/test/CodeGen/RISCV/ssr-register-merging.mir"
+    "${LLVM_SRC}/llvm/test/MC/RISCV/rv32xmempool-invalid.s"
+    "${LLVM_SRC}/llvm/test/MC/RISCV/rv32xmempool-valid.s"
   )
 
 # Allow environment to control parallelism
