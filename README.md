@@ -31,5 +31,74 @@ docker build -t snitch -f util/container/Dockerfile .
 docker tag snitch ghcr.io/pulp-platform/snitch:0.1.0-rc1
 ```
 
+## Development
+For working on LLVM we suggest configuring LLVM with these settings (choose `CMAKE_BUILD_TYPE="Debug"` for enabling `gdb` debugging.)
+
+```bash
+INSTALLPREFIX=$(pwd)/install
+mkdir -p build-llvm install; cd build-llvm
+cmake \
+    -DCMAKE_BUILD_TYPE="Release" -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DCMAKE_INSTALL_PREFIX=${INSTALLPREFIX} \
+    -DLLVM_ENABLE_PROJECTS="clang;lld" \
+    -DLLVM_TARGETS_TO_BUILD="RISCV" \
+    -DLLVM_DEFAULT_TARGET_TRIPLE="riscv32-unknown-elf" \
+    -DLLVM_ENABLE_LLD=True -DLLVM_APPEND_VC_REV=OFF \
+    -G Ninja ../llvm
+ninja
+ninja install
+```
+
+Compile and build `newlib`
+
+```bash
+git clone --depth 1 -b newlib-3.3.0 https://sourceware.org/git/newlib-cygwin.git newlib
+mkdir build-newlib; cd build-newlib
+../newlib/configure                                    \
+    --target=riscv32-unknown-elf                       \
+    --prefix=${INSTALLPREFIX}                                   \
+    AR_FOR_TARGET=${INSTALLPREFIX}/bin/llvm-ar                  \
+    AS_FOR_TARGET=${INSTALLPREFIX}/bin/llvm-as                  \
+    LD_FOR_TARGET=${INSTALLPREFIX}/bin/llvm-ld                  \
+    RANLIB_FOR_TARGET=${INSTALLPREFIX}/bin/llvm-ranlib          \
+    CC_FOR_TARGET="${INSTALLPREFIX}/bin/clang -march=rv32imafd"
+make -j$(nproc)
+make install
+```
+
+Compile and build `compiler-rt`
+
+```bash
+mkdir build-crt; cd build-crt
+cmake -G"Unix Makefiles"                                                     \
+    -DCMAKE_SYSTEM_NAME=Linux                                                \
+    -DCMAKE_INSTALL_PREFIX=$(${INSTALLPREFIX}/bin/clang -print-resource-dir) \
+    -DCMAKE_C_COMPILER=${INSTALLPREFIX}/bin/clang                            \
+    -DCMAKE_CXX_COMPILER=${INSTALLPREFIX}/bin/clang                          \
+    -DCMAKE_AR=${INSTALLPREFIX}/bin/llvm-ar                                  \
+    -DCMAKE_NM=${INSTALLPREFIX}/bin/llvm-nm                                  \
+    -DCMAKE_RANLIB=${INSTALLPREFIX}/bin/llvm-ranlib                          \
+    -DCMAKE_C_COMPILER_TARGET="riscv32-unknown-elf"                          \
+    -DCMAKE_CXX_COMPILER_TARGET="riscv32-unknown-elf"                        \
+    -DCMAKE_ASM_COMPILER_TARGET="riscv32-unknown-elf"                        \
+    -DCMAKE_C_FLAGS="-march=rv32imafd -mabi=ilp32d"                          \
+    -DCMAKE_CXX_FLAGS="-march=rv32imafd -mabi=ilp32d"                        \
+    -DCMAKE_ASM_FLAGS="-march=rv32imafd -mabi=ilp32d"                        \
+    -DCMAKE_EXE_LINKER_FLAGS="-nostartfiles -nostdlib -fuse-ld=lld"          \
+    -DCOMPILER_RT_BAREMETAL_BUILD=ON                                         \
+    -DCOMPILER_RT_BUILD_BUILTINS=ON                                          \
+    -DCOMPILER_RT_BUILD_MEMPROF=OFF                                          \
+    -DCOMPILER_RT_BUILD_LIBFUZZER=OFF                                        \
+    -DCOMPILER_RT_BUILD_PROFILE=OFF                                          \
+    -DCOMPILER_RT_BUILD_SANITIZERS=OFF                                       \
+    -DCOMPILER_RT_BUILD_XRAY=OFF                                             \
+    -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON                                     \
+    -DCOMPILER_RT_OS_DIR=""                                                  \
+    -DLLVM_CONFIG_PATH=${INSTALLPREFIX}/bin/llvm-config                      \
+    ../../compiler-rt
+make
+make install
+```
+
 [snitch-llvm]: https://github.com/pulp-platform/snitch-llvm
 [snitch]: https://github.com/pulp-platform/snitch
