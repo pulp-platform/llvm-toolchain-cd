@@ -14,9 +14,6 @@ BUILDPREFIX=${PWD}/build
 LLVMSRC=${PWD}/llvm-project
 NEWLIBSRC=${PWD}/newlib
 
-# Print the GCC and G++ used in this build
-which gcc
-which g++
 
 # If a BUGURL and PKGVERS has been provided, set variables
 NEWLIB_EXTRA_OPTS=""
@@ -31,6 +28,12 @@ fi
 if [ "x${BUILDNO}" != "x" ]; then
   LLVM_EXTRA_OPTS="${LLVM_EXTRA_OPTS} -DLLVM_VERSION_SUFFIX='-${BUILDNO}'"
 fi
+
+# cxx from variable or system
+if [ "x${CC}" == "x" ]; then CC=`which gcc`; fi
+if [ "x${CXX}" == "x" ]; then CXX=`which g++`; fi
+echo $CC
+echo $CXX
 
 # Allow environment to control parallelism
 if [ "x${PARALLEL_JOBS}" == "x" ]; then
@@ -49,6 +52,8 @@ cmake \
     -DLLVM_CCACHE_BUILD=${CCACHE_BUILD} \
     -DLLVM_TARGETS_TO_BUILD="RISCV" \
     -DLLVM_DEFAULT_TARGET_TRIPLE="riscv32-unknown-elf" \
+    -DCMAKE_C_COMPILER=$CC \
+    -DCMAKE_CXX_COMPILER=$CXX \
     ${LLVM_EXTRA_OPTS} \
     -G Ninja ${LLVMSRC}/llvm
 ninja -j ${PARALLEL_JOBS}
