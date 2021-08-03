@@ -3,7 +3,7 @@
 # Licensed under the Apache License, Version 2.0, see LICENSE for details.
 # SPDX-License-Identifier: Apache-2.0
 
-VERSION=snitch-0.1.0-rc2
+VERSION=snitch-0.1.0-rc4
 
 WORKDIR=${PWD}
 OUTDIR=${WORKDIR}/.release
@@ -20,7 +20,7 @@ TRIPLE=riscv32-snitch-llvm
 BUILDNO=${VERSION}
 
 # All OSes to build
-OSes="ubuntu1804" # ubuntu1804 ubuntu2004 centos7
+OSes="ubuntu1804 ubuntu2004 centos7" # ubuntu1804 ubuntu2004 centos7
 
 # prepare
 mkdir -p ${OUTDIR}
@@ -30,9 +30,10 @@ echo "OSes          $OSes" >> ${OUTDIR}/buildlog.txt
 echo "LLVM_VERSION  $LLVM_VERSION" >> ${OUTDIR}/buildlog.txt
 
 # For each OS, build the toolchain
+oldpwd=${PWD}
 for os in $OSes; do
   # Temp dir
-  tmpdir=$(mktemp -d); cd ${tmpdir}
+  tmpdir=$(mktemp -d -p .); cd ${tmpdir}
 
   # shallow-clone newlib and llvm
   git clone --depth 1 -b newlib-${NEWLIB_VERSION} https://sourceware.org/git/newlib-cygwin.git newlib
@@ -66,4 +67,6 @@ for os in $OSes; do
 
   # exit and cleanup
   docker run -v $PWD:/home/builder -w/home/builder linux-${os}:latest /bin/bash -c "rm -rf build install"
+  cd ${oldpwd}
+  rm -rf ${tmpdir}
 done
