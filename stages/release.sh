@@ -11,7 +11,7 @@ PARALLEL_JOBS=$(expr $(nproc) - 1)
 
 # Specify versions to use
 NEWLIB_VERSION=3.3.0
-LLVM_VERSION=12.0.0-${VERSION}
+LLVM_VERSION=12.0.1-${VERSION}
 
 # Build variables
 BUGURL=https://github.com/pulp-platform/snitch-llvm/issues
