@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     env:
-      PKGVERS: riscv32-snitch-llvm-ubuntu2004
+      PKGVERS: riscv32-pulp-llvm-ubuntu2004
     steps:
       ########################################
       ## Build Docker image and publish to pulp-platform's GHCR.
@@ -29,10 +29,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: docker/snitch-llvm.Dockerfile
+          file: docker/pulp-llvm.Dockerfile
           build-args: |
             TCTAR=${{ env.PKGVERS }}.tar.gz
           tags: |
-            docker.pkg.github.com/pulp-platform/snitch-toolchain-cd/snitch-llvm:latest
-            snitch-llvm:latest
+            docker.pkg.github.com/pulp-platform/llvm-toolchain-cd/pulp-llvm:latest
+            pulp-llvm:latest
           push: false

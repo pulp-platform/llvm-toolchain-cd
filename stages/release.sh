@@ -3,7 +3,7 @@
 # Licensed under the Apache License, Version 2.0, see LICENSE for details.
 # SPDX-License-Identifier: Apache-2.0
 
-VERSION=snitch-0.1.0-rc4
+VERSION=0.2.0
 
 WORKDIR=${PWD}
 OUTDIR=${WORKDIR}/.release
@@ -14,8 +14,8 @@ NEWLIB_VERSION=3.3.0
 LLVM_VERSION=12.0.1-${VERSION}
 
 # Build variables
-BUGURL=https://github.com/pulp-platform/snitch-llvm/issues
-TRIPLE=riscv32-snitch-llvm
+BUGURL=https://github.com/pulp-platform/llvm-project/issues
+TRIPLE=riscv32-pulp-llvm
 # LLVM_VERSION_SUFFIX is set to "-${BUILDNO}"
 BUILDNO=${VERSION}
 
@@ -37,7 +37,7 @@ for os in $OSes; do
 
   # shallow-clone newlib and llvm
   git clone --depth 1 -b newlib-${NEWLIB_VERSION} https://sourceware.org/git/newlib-cygwin.git newlib
-  git clone --depth 1 -b ${LLVM_VERSION} https://github.com/pulp-platform/snitch-llvm.git llvm-project
+  git clone --depth 1 -b ${LLVM_VERSION} https://github.com/pulp-platform/llvm-project.git llvm-project
 
   # Build builder container
   docker build -t linux-${os}:latest -f ${WORKDIR}/docker/linux-${os}.Dockerfile .

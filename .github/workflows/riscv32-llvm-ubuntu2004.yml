@@ -10,7 +10,7 @@ on:
       llvmref:
         description: 'Ref from the LLVM Repo'
         required: false
-        default: 'snitch'
+        default: 'main'
   schedule:
     - cron: '42 1 * * *'
 
@@ -18,8 +18,8 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     env:
-      PKGVERS: riscv32-snitch-llvm-ubuntu2004-${{ github.run_number }}
-      BUGURL: https://github.com/pulp-platform/snitch-llvm/issues
+      PKGVERS: riscv32-pulp-llvm-ubuntu2004-${{ github.run_number }}
+      BUGURL: https://github.com/pulp-platform/llvm-project/issues
       BUILDNO: ${{ github.run_number }}
       SSH_PRIVATE_KEY: ${{secrets.SOURCEFORGE_SSH_PRIVATE_KEY}}
       SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
@@ -39,7 +39,7 @@ jobs:
         name: Checkout LLVM
         uses: actions/checkout@v2
         with:
-          repository: pulp-platform/snitch-llvm
+          repository: pulp-platform/llvm-project
           ref: ${{ github.event.inputs.llvmref }}
           path: llvm-project
       
@@ -150,4 +150,4 @@ jobs:
         name: deploy-sourceforge
         run: |
           dstname=`echo ${PKGVERS} | rev | cut -d'-' -f 2- | rev`
-          scp -i ${SOURCEFORGE_KEY} ${PKGVERS}.tar.gz beeble42brox@frs.sourceforge.net:/home/frs/project/snitch-llvm/nightly/${dstname}.tar.gz
+          scp -i ${SOURCEFORGE_KEY} ${PKGVERS}.tar.gz beeble42brox@frs.sourceforge.net:/home/frs/project/pulp-llvm-project/nightly/${dstname}.tar.gz

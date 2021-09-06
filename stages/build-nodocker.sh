@@ -12,13 +12,12 @@ if [ "$#" -ne 1 ]; then
   exit -1
 fi
 
-
 ########################################
 ## build settings
 ########################################
 CCACHE_BUILD=False
-BUGURL=https://github.com/pulp-platform/snitch-llvm/issues
-PKGVERS=riscv32-snitch-llvm-centos7
+BUGURL=https://github.com/pulp-platform/llvm-project/issues
+PKGVERS=riscv32-pulp-llvm-centos7
 BUILDNO=0
 # PARALLEL_JOBS=$(expr `nproc` - 2)
 PARALLEL_JOBS=24
@@ -100,6 +99,3 @@ cd ${WORK}
 exec ${SCRIPTSPATH}/build-riscv32-llvm.sh
 
 exec ${SCRIPTSPATH}/tmp.sh
-
-
-

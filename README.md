@@ -1,25 +1,32 @@
-# snitch-toolchain-cd
+# llvm-toolchain-cd
 
-Continuous delivery of the Snitch LLVM toolchain.
+Continuous delivery of the PULP LLVM toolchain.
 
 ## Download
 
-| Name | OS | Download | Status |
-|------|----|------|--------|
-| riscv32-snitch-llvm-centos7.tar.gz | CentOS 7 | [link](https://sourceforge.net/projects/snitch-llvm/files/nightly/riscv32-snitch-llvm-centos7.tar.gz/download) | [![riscv32-llvm-centos7](https://github.com/pulp-platform/snitch-toolchain-cd/actions/workflows/riscv32-llvm-centos7.yml/badge.svg)](https://github.com/pulp-platform/snitch-toolchain-cd/actions/workflows/riscv32-llvm-centos7.yml) |
-| riscv32-snitch-llvm-ubuntu2004.tar.gz | Ubuntu 20.04 | [link](https://sourceforge.net/projects/snitch-llvm/files/nightly/riscv32-snitch-llvm-ubuntu2004.tar.gz/download) | [![riscv32-llvm-ubuntu2004](https://github.com/pulp-platform/snitch-toolchain-cd/actions/workflows/riscv32-llvm-ubuntu2004.yml/badge.svg)](https://github.com/pulp-platform/snitch-toolchain-cd/actions/workflows/riscv32-llvm-ubuntu2004.yml) |
+| Name                                | OS           | Download  | Status                            |
+|:------------------------------------|:-------------|:----------|:----------------------------------|
+| riscv32-pulp-llvm-centos7.tar.gz    | CentOS 7     | [link][1] | [![riscv32-llvm-centos7][3]][5]   |
+| riscv32-pulp-llvm-ubuntu2004.tar.gz | Ubuntu 20.04 | [link][2] | [![riscv32-llvm-ubuntu2004][4]][6] |
+
+[1]: https://sourceforge.net/projects/pulp-llvm-project/files/nightly/riscv32-pulp-llvm-centos7.tar.gz/download
+[2]: https://sourceforge.net/projects/pulp-llvm-project/files/nightly/riscv32-pulp-llvm-ubuntu2004.tar.gz/download
+[3]: https://github.com/pulp-platform/llvm-toolchain-cd/actions/workflows/riscv32-llvm-centos7.yml/badge.svg
+[4]: https://github.com/pulp-platform/llvm-toolchain-cd/actions/workflows/riscv32-llvm-ubuntu2004.yml/badge.svg
+[5]: https://github.com/pulp-platform/llvm-toolchain-cd/actions/workflows/riscv32-llvm-centos7.yml
+[6]: https://github.com/pulp-platform/llvm-toolchain-cd/actions/workflows/riscv32-llvm-ubuntu2004.yml
 
 ## Tagging a new release
 
-Naming scheme: `12.0.0-snitch-0.1.0-rc1`
+Naming scheme: `12.0.1-0.1.0`
 
-- Create a new tag in [snitch-llvm][snitch-llvm]
+- Create a new tag in [llvm-project][llvm-project]
 - Build for all releases using `stages/release.sh`
 - Upload artifacts to the release
 - Create release notes
 ```bash
-last_tag=12.0.0-snitch-0.1.0-rc1
-new_tag=12.0.0-snitch-0.1.0-rc2
+last_tag=12.0.1-0.1.0
+new_tag=12.0.1-0.2.0
 echo "## Changes since last release"
 echo "Last release: \`$last_tag\`"
 git --no-pager log $last_tag..$new_tag --format="- %C(auto) %h %s"
@@ -100,5 +107,5 @@ make
 make install
 ```
 
-[snitch-llvm]: https://github.com/pulp-platform/snitch-llvm
+[llvm-project]: https://github.com/pulp-platform/llvm-project
 [snitch]: https://github.com/pulp-platform/snitch
