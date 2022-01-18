@@ -1,3 +1,7 @@
+## :warning: **pulp-platform/llvm-toolchain-cd is not maintained**
+
+This repository has been deprecated and archived on Jan 18th, 2022. The CI scripts were integrated into the [PULP  llvm-project repository][llvm-project] with [e00538](https://github.com/pulp-platform/llvm-project/commit/e005382633d2a8b6309f7955fc4dd93fb7ef0d5f) and [a9d462](https://github.com/pulp-platform/llvm-project/commit/a9d462aaef7c500e64b1d69fb7b10c4e047dde60).
+
 # llvm-toolchain-cd
 
 Continuous delivery of the PULP LLVM toolchain.
